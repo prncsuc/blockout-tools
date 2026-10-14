@@ -1,3 +1,14 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: 5227bc309b64902b9bfd2bb79d4de347_05ad363ac7d411f1944f525400248c00
+    ReservedCode1: PKfwiBPeIC8e99W0YQWb0LnrofnzKFEhZfXWlpI2XScr5sgCH466R2zUxDBWBkvp6TNEpxk8145nFyRJ5BxX/dKxTqPPToCE4K3QPZDi/5f2m9vXNQE4lwAFa0dWfR+A6A+np8eOGqF6lKpvRWQhdP5gLSKznC6t+sHjONGTbMmjj5oVZfa/a80LVaA=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: 5227bc309b64902b9bfd2bb79d4de347_05ad363ac7d411f1944f525400248c00
+    ReservedCode2: PKfwiBPeIC8e99W0YQWb0LnrofnzKFEhZfXWlpI2XScr5sgCH466R2zUxDBWBkvp6TNEpxk8145nFyRJ5BxX/dKxTqPPToCE4K3QPZDi/5f2m9vXNQE4lwAFa0dWfR+A6A+np8eOGqF6lKpvRWQhdP5gLSKznC6t+sHjONGTbMmjj5oVZfa/a80LVaA=
+---
+
 # Blockout Tools — 网页版关卡白盒工具 (Web Blockout Level Editor)
 
 对标 UE5 Blockout Toolkit 风格的浏览器白盒工具，用于关卡原型搭建与灰盒验证。基于 Three.js r128，全部资源本地化，`file://` 双击即可离线运行。
@@ -97,3 +108,4 @@ Double-click `index.html` — no server needed (Chrome / Edge recommended).
 | `Shift+左键` | 连续放置 / 旋转视图 Place multiple / Orbit |
 | `W A S D` | 角色模式下移动（Role mode move） |
 | `Shift` / `Space` | 角色模式下奔跑 / 跳跃（Role mode run / jump） |
+*（内容由AI生成，仅供参考）*
