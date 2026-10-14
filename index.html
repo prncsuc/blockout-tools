@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Blockout Tools - 网页版关卡白盒工具</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:100%; height:100%; overflow:hidden; font-family:"Segoe UI","Microsoft YaHei",sans-serif; font-size:13px; color:#ddd; background:#1e2126; }
+#app { display:flex; flex-direction:column; width:100vw; height:100vh; }
+/* 顶部工具栏 */
+#toolbar { height:44px; background:#262a33; border-bottom:1px solid #17191e; display:flex; align-items:center; gap:4px; padding:0 8px; flex-shrink:0; user-select:none; z-index:10; overflow-x:auto; }
+#toolbar select { background:#1b1e24; color:#ddd; border:1px solid #3a3f4a; border-radius:3px; padding:4px 6px; font-size:12px; }
+#roleHint { position:absolute; top:10px; right:10px; background:rgba(20,22,28,.88); color:#cde; padding:8px 12px; border-radius:6px; font-size:12px; line-height:1.9; pointer-events:none; z-index:5; }
+#toolbar .sep { width:1px; height:22px; background:#3a3f4a; margin:0 6px; }
+#toolbar button, #toolbar label.btn { background:#3a4050; color:#ddd; border:1px solid #4a5266; border-radius:4px; padding:5px 10px; cursor:pointer; font-size:12px; white-space:nowrap; }
+#toolbar button:hover, #toolbar label.btn:hover { background:#4a5266; }
+#toolbar button.act { background:#2f6fbb; border-color:#3b86d8; color:#fff; }
+#toolbar .grp-label { color:#8a91a3; font-size:11px; margin:0 2px; }
+#toolbar input[type=number] { width:56px; background:#1b1e24; color:#ddd; border:1px solid #3a3f4a; border-radius:3px; padding:4px 6px; }
+#toolbar input[type=checkbox] { accent-color:#2f6fbb; }
+#toolbar label.inline { display:inline-flex; align-items:center; gap:4px; font-size:12px; color:#aab; cursor:pointer; }
+/* 主区 */
+#main { flex:1; display:flex; min-height:0; }
+/* 左侧面板 */
+#left { width:240px; background:#23262d; border-right:1px solid #17191e; display:flex; flex-direction:column; flex-shrink:0; user-select:none; }
+#left .tabs { display:flex; border-bottom:1px solid #17191e; }
+#left .tabs .tab { flex:1; text-align:center; padding:8px 0; cursor:pointer; color:#8a91a3; border-bottom:2px solid transparent; }
+#left .tabs .tab.active { color:#fff; border-bottom-color:#2f6fbb; background:#1b1e24; }
+#left .tab-page { flex:1; overflow-y:auto; display:none; padding:8px; }
+#left .tab-page.active { display:block; }
+#left h4 { color:#aab; font-weight:600; margin:6px 2px 4px; font-size:12px; }
+#blockGrid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+.blockBtn { background:#333a46; border:1px solid #454d5e; border-radius:6px; padding:10px 4px; text-align:center; cursor:pointer; color:#cdd; }
+.blockBtn:hover { background:#41506b; }
+.blockBtn.active { background:#2f6fbb; border-color:#3b86d8; }
+.blockBtn .ic { display:block; font-size:18px; margin-bottom:4px; }
+.blockBtn .nm { font-size:11px; }
+#paletteGrid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+.palBtn { display:flex; align-items:center; gap:6px; background:#333a46; border:1px solid #454d5e; border-radius:6px; padding:6px 8px; cursor:pointer; color:#cdd; font-size:11px; }
+.palBtn:hover { background:#41506b; }
+.palBtn.active { border-color:#2f6fbb; box-shadow:0 0 0 1px #2f6fbb; }
+.palBtn .sw { width:14px; height:14px; border-radius:3px; flex-shrink:0; }
+#customRow { display:flex; gap:4px; margin-top:8px; align-items:center; }
+#customColor { width:30px; height:26px; border:none; background:none; cursor:pointer; }
+#applyCustom { flex:1; background:#3a4050; border:1px solid #4a5266; border-radius:4px; padding:4px 0; cursor:pointer; color:#cdd; }
+/* 场景树 */
+#treeWrap { display:flex; flex-direction:column; height:100%; }
+#tree { flex:1; overflow-y:auto; }
+.treeItem { display:flex; align-items:center; gap:4px; padding:4px 6px; cursor:pointer; border-radius:4px; color:#cdd; font-size:12px; }
+.treeItem:hover { background:#333a46; }
+.treeItem.sel { background:#2f6fbb; color:#fff; }
+.treeItem .eye { width:16px; text-align:center; cursor:pointer; opacity:.8; }
+.treeItem .nm { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.treeItem .ty { color:#8a91a3; font-size:10px; }
+#treeBtns { display:flex; gap:4px; padding:6px 0 0; }
+#treeBtns button { flex:1; background:#3a4050; border:1px solid #4a5266; border-radius:4px; padding:5px 0; cursor:pointer; color:#cdd; font-size:11px; }
+#treeBtns button:hover { background:#4a5266; }
+/* 右侧参数面板 */
+#right { width:252px; background:#23262d; border-left:1px solid #17191e; padding:10px; overflow-y:auto; flex-shrink:0; user-select:none; }
+#right .sec { margin-bottom:12px; }
+#right h4 { color:#aab; font-weight:600; margin-bottom:6px; font-size:12px; border-bottom:1px solid #333a46; padding-bottom:4px; }
+#right .row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+#right .row label { width:52px; color:#8a91a3; font-size:12px; flex-shrink:0; }
+#right .row input[type=number] { flex:1; background:#1b1e24; color:#ddd; border:1px solid #3a3f4a; border-radius:3px; padding:5px 6px; width:100%; }
+#right .row input[type=text] { flex:1; background:#1b1e24; color:#ddd; border:1px solid #3a3f4a; border-radius:3px; padding:5px 6px; width:100%; }
+#right select { flex:1; background:#1b1e24; color:#ddd; border:1px solid #3a3f4a; border-radius:3px; padding:5px; }
+#right .btn { background:#3a4050; border:1px solid #4a5266; border-radius:4px; padding:5px 8px; cursor:pointer; color:#cdd; font-size:12px; }
+#right .btn:hover { background:#4a5266; }
+#right .btn.danger { background:#5a2a2a; border-color:#7a3a3a; }
+#right .btn.danger:hover { background:#7a3a3a; }
+#right .btnRow { display:flex; gap:6px; }
+#right .btnRow .btn { flex:1; text-align:center; }
+#emptyTip { color:#6a7180; text-align:center; margin-top:30px; line-height:1.8; }
+#paramBody .hint { color:#6a7180; font-size:11px; margin-bottom:8px; }
+/* 画布 */
+#viewport { flex:1; position:relative; background:#262a31; min-width:0; }
+canvas { display:block; }
+#gridHelperWrap { position:absolute; left:10px; bottom:10px; color:#8a91a3; font-size:11px; pointer-events:none; }
+/* 底部状态栏 */
+#statusbar { height:28px; background:#262a33; border-top:1px solid #17191e; display:flex; align-items:center; gap:16px; padding:0 12px; color:#8a91a3; font-size:12px; flex-shrink:0; user-select:none; }
+#statusbar .mode { color:#7fb0ff; }
+/* 通用 */
+::-webkit-scrollbar { width:8px; height:8px; }
+::-webkit-scrollbar-thumb { background:#3a3f4a; border-radius:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- 顶部工具栏 -->
+  <div id="toolbar">
+    <span class="grp-label" style="font-weight:600;color:#eef" data-i18n="appTitle">⛏ Blockout Tools</span>
+    <span class="sep"></span>
+    <button id="btnSelect" class="act" title="选择/编辑 (Q)" data-i18n="select">选择</button>
+    <button id="btnDelete" title="删除选中 (Delete)" data-i18n="delete">删除</button>
+    <button id="btnDuplicate" title="复制选中 (Ctrl+C / Ctrl+D)" data-i18n="duplicate">复制</button>
+    <button id="btnPaste" title="粘贴 (Ctrl+V)" data-i18n="paste">粘贴</button>
+    <span class="sep"></span>
+    <button id="btnViewPersp" class="act" title="透视/正交 (P)" data-i18n="persp">透视</button>
+    <button id="btnTop" title="顶视图 (T)" data-i18n="top">顶</button>
+    <button id="btnFront" title="前视图 (F)" data-i18n="front">前</button>
+    <button id="btnRight" title="右视图 (Y)" data-i18n="right">右</button>
+    <span class="sep"></span>
+    <button id="btnGrid" data-i18n="grid">网格</button>
+    <button id="btnWire" data-i18n="wire">线框</button>
+    <label class="inline"><input type="checkbox" id="chkGround" checked> <span data-i18n="ground">贴地</span></label>
+    <span class="sep"></span>
+    <label class="inline" style="margin-right:2px" data-i18n="gridSize">网格尺寸</label>
+    <input type="number" id="gridSize" value="1" step="0.5" min="0.01">
+    <span class="sep"></span>
+    <button id="btnTps" title="TPS 角色跑图" data-i18n="tps">TPS角色</button>
+    <button id="btnFps" title="FPS 角色跑图" data-i18n="fps">FPS角色</button>
+    <span class="sep"></span>
+    <button id="btnSaveJson" data-i18n="save">保存</button>
+    <button id="btnOpenFile" data-i18n="open">打开</button>
+    <button id="btnAutoSave" data-i18n="autoSave">自动保存</button>
+    <button id="btnRestoreAuto" data-i18n="restoreAuto" style="display:none">恢复自动保存</button>
+    <span class="sep"></span>
+    <button id="btnExportGLB" data-i18n="exportGLB">导出GLB</button>
+    <button id="btnExportOBJ" data-i18n="exportOBJ">导出OBJ</button>
+    <button id="btnExportFBX" data-i18n="exportFBX">导出FBX</button>
+    <label class="btn" data-i18n="import">导入GLB/OBJ<input type="file" id="fileImport" accept=".glb,.obj,.gltf" style="display:none"></label>
+    <span class="sep"></span>
+    <select id="langSel" title="语言/Language">
+      <option value="zh">中文</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+
+  <div id="main">
+    <!-- 左侧：体块库 / 场景树 -->
+    <div id="left">
+      <div class="tabs">
+        <div class="tab active" data-tab="blocksTab" data-i18n="blocksTab">体块库</div>
+        <div class="tab" data-tab="treeTab" data-i18n="treeTab">场景树</div>
+      </div>
+      <div id="blocksTab" class="tab-page active">
+        <h4 data-i18n="blockTitle">体块类型（点击后到场景点击放置）</h4>
+        <div id="blockGrid"></div>
+        <h4 data-i18n="paletteTitle">白盒分色板（点击应用选中体块）</h4>
+        <div id="paletteGrid"></div>
+        <div id="customRow">
+          <input type="color" id="customColor" value="#ffcc00">
+          <button id="applyCustom" data-i18n="custom">应用自定义色</button>
+        </div>
+      </div>
+      <div id="treeTab" class="tab-page">
+        <div id="treeWrap">
+          <div id="tree"></div>
+          <div id="treeBtns">
+            <button id="btnTreeSelect" data-i18n="treeSelect">选择</button>
+            <button id="btnTreeCopy" data-i18n="treeCopy">复制</button>
+            <button id="btnTreeDelete" data-i18n="treeDelete">删除</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D 视口 -->
+    <div id="viewport">
+      <canvas id="canvas"></canvas>
+      <div id="gridHelperWrap"></div>
+      <div id="roleHint" style="display:none"></div>
+    </div>
+
+    <!-- 右侧参数面板 -->
+    <div id="right">
+      <div id="emptyTip" data-i18n="emptyTip">未选中体块<br>请在体块库点选类型后<br>到场景中点击放置</div>
+      <div id="paramBody" style="display:none">
+        <div class="sec">
+          <h4 data-i18n="secInfo">体块信息</h4>
+          <div class="row"><label data-i18n="name">名称</label><input type="text" id="pName"></div>
+          <div class="row"><label data-i18n="type">类型</label><span id="pType" style="color:#aab"></span></div>
+          <div class="row"><label data-i18n="category">分类</label><select id="pCategory"></select></div>
+          <div class="row"><label data-i18n="color">颜色</label><input type="color" id="pColor" style="flex:1;height:26px;background:none;border:none;padding:0"></div>
+        </div>
+        <div class="sec">
+          <h4 data-i18n="secParams">尺寸参数</h4>
+          <div id="pParams"></div>
+        </div>
+        <div class="sec">
+          <h4 data-i18n="secTrans">变换</h4>
+          <div class="row"><label>X</label><input type="number" id="pX" step="0.1"></div>
+          <div class="row"><label>Y</label><input type="number" id="pY" step="0.1"></div>
+          <div class="row"><label>Z</label><input type="number" id="pZ" step="0.1"></div>
+          <div class="row"><label data-i18n="rotY">旋转Y</label><input type="number" id="pRotY" step="5"></div>
+          <div class="hint" data-i18n="transHint">位置/旋转修改后按 Enter 应用，或失焦自动应用</div>
+        </div>
+        <div class="sec">
+          <h4 data-i18n="secOps">操作</h4>
+          <div class="btnRow">
+            <button class="btn" id="btnParamDelete" data-i18n="opDelete">删除</button>
+            <button class="btn" id="btnParamDuplicate" data-i18n="opDuplicate">复制</button>
+            <button class="btn" id="btnParamReset" data-i18n="opReset">重置</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部状态栏 -->
+  <div id="statusbar">
+    <span class="mode" id="sbMode" data-i18n="sbModeSelect">选择</span>
+    <span id="sbHint"></span>
+    <span id="sbAuto" style="color:#7fb0ff"></span>
+    <span id="sbCursor" style="margin-left:auto"></span>
+  </div>
+</div>
+
+<!-- 本地 three 库（r128 UMD，普通 script 引入，保证 file:// 离线可用） -->
+<script src="three.min.js"></script>
+<script src="OrbitControls.js"></script>
+<script src="GLTFLoader.js"></script>
+<script src="GLTFExporter.js"></script>
+<script src="FBXExporter.js"></script>
+<!-- 主脚本 -->
+<script src="main.js"></script>
+</body>
+</html>
