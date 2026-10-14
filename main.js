@@ -48,6 +48,7 @@ const state = {
   wireVisible: false,
   groundSnap: true,
   gridSize: 1,
+  gridExtent: 40,
   defaultCategory: '地面',
   isOrtho: false,
   idSeq: 1,
@@ -264,7 +265,19 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.12;
 
 /* 网格（可切换） */
-const grid = new THREE.GridHelper(40, 40, GRID_COLOR, GRID_COLOR);
+let grid = new THREE.GridHelper(40, 40, GRID_COLOR, GRID_COLOR);
+
+/* 大尺寸关卡：按设定范围重建网格 */
+function rebuildGrid() {
+  const extent = state.gridExtent || 40;
+  const div = Math.max(8, Math.min(400, Math.round(extent / state.gridSize)));
+  scene.remove(grid);
+  if (grid.geometry) grid.geometry.dispose();
+  if (grid.material) grid.material.dispose();
+  grid = new THREE.GridHelper(extent, div, GRID_COLOR, GRID_COLOR);
+  grid.visible = state.gridVisible;
+  scene.add(grid);
+}
 grid.material.transparent = true;
 grid.material.opacity = 0.35;
 scene.add(grid);
@@ -341,6 +354,7 @@ function rebuildBodyGeometry(body) {
     body.remove(c);
   }
   const geos = buildGeometries(ud.type, ud.params);
+  let maxR = 0;
   geos.forEach(g => {
     const mesh = new THREE.Mesh(g, bodyMaterial(prevColor));
     mesh.userData.isBodyMesh = true;
@@ -349,10 +363,20 @@ function rebuildBodyGeometry(body) {
     const edge = new THREE.LineSegments(eg, edgeMaterial());
     edge.userData.isEdge = true;
     body.add(edge);
+    const b = g.boundingBox ? g.boundingBox.clone() : new THREE.Box3().setFromBufferAttribute(g.getAttribute('position'));
+    const c = b.getCenter(new THREE.Vector3());
+    const r = c.distanceTo(b.max);
+    if (r > maxR) maxR = r;
   });
+  ud.boundRadius = maxR || 10;
 }
 
 function removeBody(body) {
+  if (!body) return;
+  pushUndo();
+  removeBodyRaw(body);
+}
+function removeBodyRaw(body) {
   if (!body) return;
   if (state.selected === body) clearSelection();
   const i = state.bodies.indexOf(body);
@@ -492,7 +516,7 @@ function updateHandleDrag(event) {
 }
 
 function endHandleDrag() {
-  state.drag = null;
+  if (state.drag) { state.drag = null; pushUndo(); }
   document.body.style.cursor = '';
 }
 
@@ -592,6 +616,7 @@ function placeBlock(event) {
     category: state.defaultCategory,
     color: CATEGORY_COLOR[state.defaultCategory],
   });
+  pushUndo();
   selectBody(body);
   refreshTree();
   if (!event.shiftKey) {
@@ -698,6 +723,8 @@ function updateParamPanel() {
           if (isNaN(v)) v = pd.def;
           if (pd.int) v = Math.round(v);
           v = Math.max(pd.min !== undefined ? pd.min : 0.01, v);
+          if (ud.params[pd.k] === v) return;
+          pushUndo();
           ud.params[pd.k] = v;
           rebuildBodyGeometry(state.selected);
           restoreSelectionHighlight(state.selected);
@@ -733,6 +760,7 @@ function bindTransformInputs() {
       if (!state.selected) return;
       const v = parseFloat(e.target.value);
       if (isNaN(v)) { updateParamPanel(); return; }
+      pushUndo();
       if (i === 0) state.selected.position.x = v;
       if (i === 1) state.selected.position.y = v;
       if (i === 2) state.selected.position.z = v;
@@ -745,6 +773,7 @@ function bindTransformInputs() {
     if (!state.selected) return;
     const v = parseFloat(e.target.value);
     if (isNaN(v)) { updateParamPanel(); return; }
+    pushUndo();
     state.selected.rotation.y = THREE.MathUtils.degToRad(v);
     updateHandlesVisual();
     refreshTree();
@@ -859,7 +888,10 @@ function toggleWire() {
 function handleKey(e) {
   if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA')) return;
   if (e.ctrlKey || e.metaKey) {
-    if (e.key.toLowerCase() === 'c' && state.selected) {
+    const kk = e.key.toLowerCase();
+    if (kk === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return; }
+    if (kk === 'y' || (kk === 'z' && e.shiftKey)) { e.preventDefault(); redo(); return; }
+    if (kk === 'c' && state.selected) {
       state.clipboard = state.selected;
       updateStatus(t('copied'));
     }
@@ -882,6 +914,7 @@ function handleKey(e) {
   if (numMap[k]) { enterPlaceMode(numMap[k]); return; }
   if (k === 'a') { enterPlaceMode('arch'); return; }
   if (k === 'i') { enterPlaceMode('pipe'); return; }
+  if (k === 'b') { frameAll(); return; }
 }
 
 /* ============ 13. 存档（JSON / GLB / OBJ 导出，GLB / OBJ 导入） ============ */
@@ -928,6 +961,7 @@ function loadJSONFile(file) {
         createBody(d);
       });
       refreshTree();
+      frameAll();
       updateStatus(t('loaded', arr.length - skipped, skipped));
     } catch (err) {
       alert(t('jsonFail', err.message));
@@ -937,7 +971,9 @@ function loadJSONFile(file) {
 }
 
 function clearAllBodies() {
-  while (state.bodies.length) removeBody(state.bodies[0]);
+  if (!state.bodies.length) { clearSelection(); refreshTree(); return; }
+  pushUndo();
+  while (state.bodies.length) removeBodyRaw(state.bodies[0]);
   clearSelection();
   refreshTree();
 }
@@ -1167,6 +1203,7 @@ function buildPalette() {
 /* 复制粘贴 / 树按钮 */
 function duplicateBody(body) {
   if (!body) return;
+  pushUndo();
   const d = cloneBodyData(body);
   if (d.type === 'imported') {
     const clone = new THREE.Group();
@@ -1273,6 +1310,10 @@ function init() {
   updateStatus();
 
   /* 工具栏 */
+  document.getElementById('btnUndo').addEventListener('click', undo);
+  document.getElementById('btnRedo').addEventListener('click', redo);
+  document.getElementById('btnRecord').addEventListener('click', toggleRecord);
+  document.getElementById('btnFocus').addEventListener('click', frameAll);
   document.getElementById('btnSelect').addEventListener('click', () => exitPlaceMode());
   document.getElementById('btnDelete').addEventListener('click', () => { if (state.selected) removeBody(state.selected); });
   document.getElementById('btnDuplicate').addEventListener('click', () => duplicateBody(state.selected));
@@ -1290,7 +1331,13 @@ function init() {
     const v = parseFloat(e.target.value);
     if (isNaN(v) || v <= 0) { e.target.value = state.gridSize; return; }
     state.gridSize = v;
-    grid.scale.set(v, 1, v);
+    rebuildGrid();
+  });
+  document.getElementById('gridExtent').addEventListener('change', e => {
+    const v = parseFloat(e.target.value);
+    if (isNaN(v) || v < 8) { e.target.value = state.gridExtent; return; }
+    state.gridExtent = v;
+    rebuildGrid();
   });
   document.getElementById('btnSaveJson').addEventListener('click', exportJSON);
   document.getElementById('btnOpenFile').addEventListener('click', () => document.getElementById('fileOpenJson').click());
@@ -1360,6 +1407,18 @@ const I18N = {
   wire: { zh: '线框', en: 'Wire' },
   ground: { zh: '贴地', en: 'Snap' },
   gridSize: { zh: '网格尺寸', en: 'Grid Size' },
+  gridExtent: { zh: '网格范围', en: 'Grid Extent' },
+  undo: { zh: '撤销', en: 'Undo' },
+  redo: { zh: '重做', en: 'Redo' },
+  noUndo: { zh: '没有可撤销的操作', en: 'Nothing to undo' },
+  noRedo: { zh: '没有可重做的操作', en: 'Nothing to redo' },
+  record: { zh: '录制', en: 'Record' },
+  recordStop: { zh: '停止录制', en: 'Stop' },
+  recordOn: { zh: '正在录制跑图视频…', en: 'Recording run…' },
+  recordDone: { zh: '录制完成，已下载 WebM 视频', en: 'Recording saved (WebM)' },
+  recordUnsupported: { zh: '当前浏览器不支持录屏', en: 'Recording not supported' },
+  recordFail: { zh: '录制失败', en: 'Recording failed' },
+  focus: { zh: '聚焦', en: 'Focus' },
   tps: { zh: 'TPS 角色', en: 'TPS' },
   fps: { zh: 'FPS 角色', en: 'FPS' },
   save: { zh: '保存', en: 'Save' },
@@ -1564,6 +1623,10 @@ function roleCollides(x, z, y) {
   for (let i = 0; i < state.bodies.length; i++) {
     const b = state.bodies[i];
     if (!b.visible || !b.userData.isBody) continue;
+    // 大尺寸关卡性能：按体块中心距离粗筛，仅精算玩家附近体块
+    const dx0 = b.position.x - x, dz0 = b.position.z - z;
+    const boundR = (b.userData.boundRadius || 20) + 6;
+    if (dx0 * dx0 + dz0 * dz0 > boundR * boundR) continue;
     const bb = bodyBox(b, _box);
     if (!bb) continue;
     const cx = Math.max(bb.min.x, Math.min(x, bb.max.x));
@@ -1592,7 +1655,7 @@ function updateRole(dt) {
     const len = Math.sqrt(mx * mx + mz * mz);
     if (len > speed * dt) { mx = mx / len * speed * dt; mz = mz / len * speed * dt; }
   }
-  if (playerKeys[' '] && player.onGround) { player.jumpV = 5; player.onGround = false; }
+  if (playerKeys[' '] && player.onGround) { player.jumpV = 8.5; player.onGround = false; }
   let y = player.pos.y;
   if (!player.onGround) {
     player.jumpV -= 20 * dt;
@@ -1654,10 +1717,127 @@ function loadAutoSave() {
     clearAllBodies();
     arr.forEach(d => { if (d.type === 'imported' || !BLOCK_TYPES[d.type]) return; createBody(d); });
     refreshTree();
+    frameAll();
     updateStatus(t('restoreDone'));
   } catch (e) {
     alert(t('jsonFail', e.message));
   }
+}
+
+/* ============ 19. 撤销 / 重做 ============ */
+const UNDO_LIMIT = 60;
+let undoStack = [];
+let redoStack = [];
+
+function snapshotScene() {
+  return state.bodies.map(cloneBodyData);
+}
+
+function pushUndo() {
+  undoStack.push(snapshotScene());
+  if (undoStack.length > UNDO_LIMIT) undoStack.shift();
+  redoStack.length = 0;
+  updateUndoUI();
+}
+
+function restoreSnapshot(arr) {
+  for (let i = state.bodies.length - 1; i >= 0; i--) {
+    const b = state.bodies[i];
+    scene.remove(b);
+    b.traverse(c => { if (c.geometry) c.geometry.dispose(); if (c.material) c.material.dispose(); });
+  }
+  state.bodies = [];
+  state.selected = null;
+  state.handles = null;
+  state.drag = null;
+  arr.forEach(d => {
+    if (d.type === 'imported' || !BLOCK_TYPES[d.type]) return;
+    createBody(d);
+  });
+  refreshTree();
+  updateStatus();
+  updateUndoUI();
+}
+
+function undo() {
+  if (!undoStack.length) { updateStatus(t('noUndo')); return; }
+  redoStack.push(snapshotScene());
+  restoreSnapshot(undoStack.pop());
+}
+
+function redo() {
+  if (!redoStack.length) { updateStatus(t('noRedo')); return; }
+  undoStack.push(snapshotScene());
+  restoreSnapshot(redoStack.pop());
+}
+
+function updateUndoUI() {
+  const bu = document.getElementById('btnUndo');
+  const br = document.getElementById('btnRedo');
+  if (bu) bu.classList.toggle('act', undoStack.length > 0);
+  if (br) br.classList.toggle('act', redoStack.length > 0);
+}
+
+/* 聚焦整个场景（B 键 / 聚焦按钮） */
+function frameAll() {
+  if (!state.bodies.length) return;
+  const box = new THREE.Box3();
+  state.bodies.forEach(b => box.expandByObject(b));
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const radius = Math.max(5, size.length() * 0.75);
+  const dir = camera.position.clone().sub(center);
+  if (dir.lengthSq() < 1e-4) dir.set(1, 1, 1);
+  dir.normalize();
+  camera.position.copy(center).addScaledVector(dir, radius);
+  controls.target.copy(center);
+  controls.update();
+  updateStatus();
+}
+
+/* ============ 20. 跑图录屏（MediaRecorder + canvas.captureStream） ============ */
+let recorder = null;
+
+function pickRecordMime() {
+  const list = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
+  for (let i = 0; i < list.length; i++) {
+    if (window.MediaRecorder && MediaRecorder.isTypeSupported(list[i])) return list[i];
+  }
+  return '';
+}
+
+function toggleRecord() {
+  const btn = document.getElementById('btnRecord');
+  if (recorder) { recorder.stop(); return; }
+  if (!window.MediaRecorder) { alert(t('recordUnsupported')); return; }
+  const stream = canvas.captureStream(30);
+  const mime = pickRecordMime();
+  const chunks = [];
+  try {
+    recorder = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 8000000 } : undefined);
+  } catch (e) {
+    alert(t('recordUnsupported'));
+    return;
+  }
+  recorder.ondataavailable = ev => { if (ev.data && ev.data.size) chunks.push(ev.data); };
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: mime || 'video/webm' });
+    downloadBlob(blob, 'blockout_run_' + Date.now() + '.webm');
+    recorder = null;
+    btn.classList.remove('act');
+    btn.textContent = t('record');
+    updateStatus(t('recordDone'));
+  };
+  recorder.onerror = () => {
+    recorder = null;
+    btn.classList.remove('act');
+    btn.textContent = t('record');
+    alert(t('recordFail'));
+  };
+  recorder.start(250);
+  btn.classList.add('act');
+  btn.textContent = t('recordStop');
+  updateStatus(t('recordOn'));
 }
 
 function bindExtraUI() {

@@ -29,6 +29,9 @@ A UE5 Blockout Toolkit–style web whitebox level editor for gray-box prototypin
 - **存档与导入 Save & Import**：JSON 存档、GLB/OBJ 导出、GLB/OBJ 导入（外部模型不参与参数化）
 - **多语言 i18n**：中文 / English 一键切换（自动记忆）
 - **角色跑图 Role Mode**：TPS / FPS 第一第三人称跑图，WASD 移动、Shift 跑、空格跳、鼠标拖拽转向，带体块碰撞
+- **撤销重做 Undo/Redo**：`Ctrl+Z` / `Ctrl+Shift+Z`（按钮同），覆盖放置/删除/变换/粘贴等操作
+- **大尺寸关卡 Large Levels**：网格范围 `gridExtent` 可调（默认 40，最大数百），配合聚焦全场 `B` / 按钮一键看全图
+- **跑图录屏 Record**：角色模式下点击录屏按钮，`canvas.captureStream + MediaRecorder` 实时录制为 WebM，跑完自动下载
 - **FBX 导出**：导出 Binary FBX (7500) 至 DCC（默认 100 倍缩放，厘米单位）
 - **本地文件 Local Files**：打开/保存 JSON 文件、自动保存（localStorage，60s 一次，可手动恢复）
 
@@ -79,6 +82,20 @@ Double-click `index.html` — no server needed (Chrome / Edge recommended).
 | `OrbitControls.js` / `GLTFLoader.js` / `GLTFExporter.js` | Three.js 官方扩展（r128，本地） |
 | `FBXExporter.js` | 第三方 FBX 导出器（Shoozes/FBXExporter-threejs，改造为 UMD 全局） |
 | `README.md` | 本说明 |
+
+---
+
+## 范例关卡 Examples
+
+`examples/` 下提供三个由脚本生成的示例白盒关卡（JSON 直接拖入页面即可加载），并附带用工具实际跑图录制的视频：
+
+| 关卡 Level | JSON | 跑图录屏 Run video | 风格 Style |
+|-----------|------|-------------------|-----------|
+| 类魂 Souls | `souls_level.json` | `run_souls_level.mp4` / `.webm` | 中庭+断墙+祭坛+柱廊，大空间慢节奏 |
+| 类CS CS | `cs_level.json` | `run_cs_level.mp4` / `.webm` | 中路+掩体+箱区+A 点台，快节奏掩体战 |
+| 类神海 Uncharted | `uncharted_level.json` | `run_uncharted_level.mp4` / `.webm` | 废墟柱列+拱门+遗迹主台，探险平台 |
+
+打开 `index.html` 后，通过工具栏“打开 JSON”加载对应关卡，点击 TPS 进入角色模式即可复现录屏中的跑图路线。
 
 ---
 

@@ -1,0 +1,399 @@
+{
+  "version": 1,
+  "meta": {
+    "name": "souls_level",
+    "description": "Blockout Tools 范例关卡",
+    "createdAt": "2026-10-14T19:27:01.411Z"
+  },
+  "bodies": [
+    {
+      "type": "plane",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "params": {
+        "w": 46,
+        "d": 38,
+        "t": 0.3
+      },
+      "color": 4173385,
+      "category": "地面",
+      "name": "庭院地台",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 0,
+      "y": 2.5,
+      "z": -19,
+      "params": {
+        "w": 46,
+        "h": 5,
+        "d": 1
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "北城墙",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 23,
+      "y": 2.5,
+      "z": 0,
+      "params": {
+        "w": 1,
+        "h": 5,
+        "d": 38
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "东城墙",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": -23,
+      "y": 2.5,
+      "z": 0,
+      "params": {
+        "w": 1,
+        "h": 5,
+        "d": 38
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "西城墙",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": -14,
+      "y": 2.5,
+      "z": 19,
+      "params": {
+        "w": 18,
+        "h": 5,
+        "d": 1
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "南城墙左",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 14,
+      "y": 2.5,
+      "z": 19,
+      "params": {
+        "w": 18,
+        "h": 5,
+        "d": 1
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "南城墙右",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "arch",
+      "x": 0,
+      "y": 0,
+      "z": 18.6,
+      "params": {
+        "w": 6,
+        "h": 5,
+        "d": 1.2,
+        "t": 0.5,
+        "ah": 2.6
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "城门拱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "ramp",
+      "x": 0,
+      "y": 0,
+      "z": 15,
+      "params": {
+        "w": 7,
+        "h": 0.35,
+        "d": 3.5
+      },
+      "color": 4173385,
+      "category": "地面",
+      "name": "门廊坡道",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 0,
+      "y": 0.4,
+      "z": 1,
+      "params": {
+        "w": 8,
+        "h": 0.8,
+        "d": 6
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "祭坛高台",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": 2.5,
+      "y": 1.3,
+      "z": 1,
+      "params": {
+        "r": 0.35,
+        "h": 1.8,
+        "seg": 20
+      },
+      "color": 10186680,
+      "category": "装饰",
+      "name": "祭坛火盆柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": -2.5,
+      "y": 1.3,
+      "z": 1,
+      "params": {
+        "r": 0.35,
+        "h": 1.8,
+        "seg": 20
+      },
+      "color": 10186680,
+      "category": "装饰",
+      "name": "祭坛火盆柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 0,
+      "y": 0.55,
+      "z": 5.5,
+      "params": {
+        "w": 7,
+        "h": 1.1,
+        "d": 0.6
+      },
+      "color": 13652819,
+      "category": "障碍",
+      "name": "断墙",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": -9,
+      "y": 2.5,
+      "z": -8,
+      "params": {
+        "r": 0.55,
+        "h": 5,
+        "seg": 20
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "廊柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": -9,
+      "y": 2.5,
+      "z": -12,
+      "params": {
+        "r": 0.55,
+        "h": 5,
+        "seg": 20
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "廊柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": 9,
+      "y": 2.5,
+      "z": -8,
+      "params": {
+        "r": 0.55,
+        "h": 5,
+        "seg": 20
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "廊柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": 9,
+      "y": 2.5,
+      "z": -12,
+      "params": {
+        "r": 0.55,
+        "h": 5,
+        "seg": 20
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "廊柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "stair",
+      "x": 0,
+      "y": 0,
+      "z": -15,
+      "params": {
+        "w": 9,
+        "h": 2.2,
+        "d": 6,
+        "steps": 10
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "大殿台阶",
+      "ry": 3.141592653589793,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 0,
+      "y": 1.1,
+      "z": -17.8,
+      "params": {
+        "w": 11,
+        "h": 2.2,
+        "d": 9
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "大殿平台",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "arch",
+      "x": 0,
+      "y": 4.2,
+      "z": -18.4,
+      "params": {
+        "w": 4,
+        "h": 3,
+        "d": 0.8,
+        "t": 0.4,
+        "ah": 1.8
+      },
+      "color": 13652819,
+      "category": "障碍",
+      "name": "大殿高窗",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": 4,
+      "y": 0.25,
+      "z": 6,
+      "params": {
+        "r": 0.5,
+        "h": 0.5,
+        "seg": 20
+      },
+      "color": 15774266,
+      "category": "可交互",
+      "name": "火盆底座",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cone",
+      "x": 4,
+      "y": 0.85,
+      "z": 6,
+      "params": {
+        "r": 0.22,
+        "h": 0.5,
+        "seg": 12
+      },
+      "color": 14711598,
+      "category": "危险",
+      "name": "火苗",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": -5,
+      "y": 0.3,
+      "z": 8,
+      "params": {
+        "w": 1.6,
+        "h": 0.6,
+        "d": 1.2
+      },
+      "color": 8028042,
+      "category": "遮挡",
+      "name": "碎石",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 6,
+      "y": 0.25,
+      "z": -3,
+      "params": {
+        "w": 1.3,
+        "h": 0.5,
+        "d": 1
+      },
+      "color": 8028042,
+      "category": "遮挡",
+      "name": "碎石",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": -6,
+      "y": 0.35,
+      "z": -2,
+      "params": {
+        "w": 1.4,
+        "h": 0.7,
+        "d": 1.1
+      },
+      "color": 8028042,
+      "category": "遮挡",
+      "name": "碎石",
+      "ry": 0,
+      "visible": true
+    }
+  ]
+}

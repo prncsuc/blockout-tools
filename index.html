@@ -91,6 +91,8 @@ canvas { display:block; }
   <div id="toolbar">
     <span class="grp-label" style="font-weight:600;color:#eef" data-i18n="appTitle">⛏ Blockout Tools</span>
     <span class="sep"></span>
+    <button id="btnUndo" title="撤销 (Ctrl+Z)" data-i18n="undo">撤销</button>
+    <button id="btnRedo" title="重做 (Ctrl+Y)" data-i18n="redo">重做</button>
     <button id="btnSelect" class="act" title="选择/编辑 (Q)" data-i18n="select">选择</button>
     <button id="btnDelete" title="删除选中 (Delete)" data-i18n="delete">删除</button>
     <button id="btnDuplicate" title="复制选中 (Ctrl+C / Ctrl+D)" data-i18n="duplicate">复制</button>
@@ -107,9 +109,13 @@ canvas { display:block; }
     <span class="sep"></span>
     <label class="inline" style="margin-right:2px" data-i18n="gridSize">网格尺寸</label>
     <input type="number" id="gridSize" value="1" step="0.5" min="0.01">
+    <label class="inline" style="margin-right:2px" data-i18n="gridExtent">网格范围</label>
+    <input type="number" id="gridExtent" value="40" step="10" min="8">
     <span class="sep"></span>
     <button id="btnTps" title="TPS 角色跑图" data-i18n="tps">TPS角色</button>
     <button id="btnFps" title="FPS 角色跑图" data-i18n="fps">FPS角色</button>
+    <button id="btnRecord" title="录制跑图视频" data-i18n="record">录制</button>
+    <button id="btnFocus" title="聚焦场景 (B)" data-i18n="focus">聚焦</button>
     <span class="sep"></span>
     <button id="btnSaveJson" data-i18n="save">保存</button>
     <button id="btnOpenFile" data-i18n="open">打开</button>

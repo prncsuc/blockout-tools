@@ -1,0 +1,317 @@
+{
+  "version": 1,
+  "meta": {
+    "name": "uncharted_level",
+    "description": "Blockout Tools 范例关卡",
+    "createdAt": "2026-10-14T19:27:01.415Z"
+  },
+  "bodies": [
+    {
+      "type": "plane",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "params": {
+        "w": 50,
+        "d": 44,
+        "t": 0.3
+      },
+      "color": 4173385,
+      "category": "地面",
+      "name": "丛林地表",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 19,
+      "y": 1.5,
+      "z": -2,
+      "params": {
+        "w": 14,
+        "h": 3,
+        "d": 26
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "悬崖高地",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 11.5,
+      "y": 0.75,
+      "z": -2,
+      "params": {
+        "w": 1,
+        "h": 1.5,
+        "d": 26
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "悬崖断面",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "plane",
+      "x": -18,
+      "y": 0.05,
+      "z": 8,
+      "params": {
+        "w": 16,
+        "d": 20,
+        "t": 0.2
+      },
+      "color": 8028042,
+      "category": "遮挡",
+      "name": "浅水道",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 3,
+      "y": 0.15,
+      "z": -2,
+      "params": {
+        "w": 14,
+        "h": 0.3,
+        "d": 16
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "遗迹主台",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "arch",
+      "x": -7,
+      "y": 0,
+      "z": -4,
+      "params": {
+        "w": 7,
+        "h": 5.5,
+        "d": 1.6,
+        "t": 0.6,
+        "ah": 3
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "遗迹拱门",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": -7,
+      "y": 2.75,
+      "z": 4,
+      "params": {
+        "r": 0.55,
+        "h": 5.5,
+        "seg": 20
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "遗迹柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": -7,
+      "y": 2.75,
+      "z": 8,
+      "params": {
+        "r": 0.55,
+        "h": 5.5,
+        "seg": 20
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "遗迹柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": -7,
+      "y": 2.75,
+      "z": -8,
+      "params": {
+        "r": 0.55,
+        "h": 5.5,
+        "seg": 20
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "遗迹柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": 3,
+      "y": 2.75,
+      "z": 4,
+      "params": {
+        "r": 0.55,
+        "h": 5.5,
+        "seg": 20
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "遗迹柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": 3,
+      "y": 2.75,
+      "z": -8,
+      "params": {
+        "r": 0.55,
+        "h": 5.5,
+        "seg": 20
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "遗迹柱",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "stair",
+      "x": -18,
+      "y": 0,
+      "z": 16,
+      "params": {
+        "w": 5,
+        "h": 1.2,
+        "d": 5,
+        "steps": 8
+      },
+      "color": 5930943,
+      "category": "墙体",
+      "name": "水边台阶",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": -10,
+      "y": 1.2,
+      "z": 6,
+      "params": {
+        "w": 8,
+        "h": 0.25,
+        "d": 2.2
+      },
+      "color": 13652819,
+      "category": "障碍",
+      "name": "断桥面板",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": -14,
+      "y": 0.6,
+      "z": -2,
+      "params": {
+        "w": 2.4,
+        "h": 1.2,
+        "d": 2
+      },
+      "color": 8028042,
+      "category": "遮挡",
+      "name": "巨石",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 8,
+      "y": 0.5,
+      "z": 6,
+      "params": {
+        "w": 2,
+        "h": 1,
+        "d": 1.8
+      },
+      "color": 8028042,
+      "category": "遮挡",
+      "name": "巨石",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cylinder",
+      "x": 6,
+      "y": 0.3,
+      "z": -10,
+      "params": {
+        "r": 0.4,
+        "h": 0.6,
+        "seg": 20
+      },
+      "color": 10186680,
+      "category": "装饰",
+      "name": "神龛座",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cone",
+      "x": 6,
+      "y": 1,
+      "z": -10,
+      "params": {
+        "r": 0.2,
+        "h": 0.5,
+        "seg": 12
+      },
+      "color": 14711598,
+      "category": "危险",
+      "name": "神龛火",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": 0,
+      "y": 0.35,
+      "z": 9,
+      "params": {
+        "w": 1.4,
+        "h": 0.7,
+        "d": 1.4
+      },
+      "color": 8028042,
+      "category": "遮挡",
+      "name": "灌木",
+      "ry": 0,
+      "visible": true
+    },
+    {
+      "type": "cube",
+      "x": -4,
+      "y": 0.3,
+      "z": 12,
+      "params": {
+        "w": 1.2,
+        "h": 0.6,
+        "d": 1.2
+      },
+      "color": 8028042,
+      "category": "遮挡",
+      "name": "灌木",
+      "ry": 0,
+      "visible": true
+    }
+  ]
+}
